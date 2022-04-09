@@ -1,11 +1,12 @@
 import logo from './logo.svg';
 
-import { getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import app from './firebase.init';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button';
 import './App.css';
+import { useState } from 'react';
 
 
 const auth = getAuth(app)
@@ -13,17 +14,27 @@ const auth = getAuth(app)
 
 function App() {
 
+  const [email, setEmail]=useState('');
+  const[pass, setPass]=useState('');
+
   const handleEmail= event =>{
-    console.log(event.target.value)
+    setEmail(event.target.value)
   }
 
 
   const handlePass=event=>{
-    console.log(event.target.value)
+    setPass(event.target.value)
   }
 
   const handleSubmit=event=>{
-    console.log("tiktik")
+    createUserWithEmailAndPassword(auth, email, pass)
+    .then(result=>{
+      const user=result.user;
+      console.log(user);
+    })
+    .catch(error=>{
+      console.error(error);
+    })
     event.preventDefault();
   }
   return (
@@ -43,9 +54,9 @@ function App() {
     <Form.Label>Password</Form.Label>
     <Form.Control onBlur={handlePass} type="password" placeholder="Password" />
   </Form.Group>
-  <Form.Group className="mb-3" controlId="formBasicCheckbox">
+  {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
     <Form.Check type="checkbox" label="Check me out" />
-  </Form.Group>
+  </Form.Group> */}
   <Button variant="primary" type="submit">
     Submit
   </Button>
